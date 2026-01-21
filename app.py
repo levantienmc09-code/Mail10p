@@ -1,13 +1,18 @@
+import os
+import threading
 import telebot
 import requests
 import random
 import json
 import time
 import re
+from flask import Flask, render_template_string
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+app = Flask(__name__)
+
 # Token bot của bạn (đã được cung cấp)
-BOT_TOKEN = '8239205483:AAEbc88OiRxuzO6mTFZNMLgLllSfqu8Fan0'
+BOT_TOKEN = '8239205483:AAGW5QYjvQ0sajAlvbFY0idiPWo5Z6GX_Ko'
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # Lưu trữ session ID của user
@@ -364,17 +369,202 @@ def handle_all_messages(message):
         reply_markup=create_main_keyboard()
     )
 
-def main():
-    """Hàm chính chạy bot"""
-    print("🤖 Bot đang chạy...")
+def run_bot():
+    """Chạy bot Telegram trong thread riêng"""
+    print("🤖 Bot Telegram đang chạy...")
     print("📧 Bot tạo email 10 phút với trích xuất mã số")
     print(f"🔑 Token: {BOT_TOKEN[:10]}...")
-    print("👉 Nhấn Ctrl+C để dừng bot")
     
     try:
         bot.infinity_polling(timeout=60, long_polling_timeout=60)
     except Exception as e:
-        print(f"Lỗi: {e}")
+        print(f"Lỗi Telegram bot: {e}")
 
-if __name__ == "__main__":
-    main()
+@app.route('/')
+def home():
+    """Trang chủ hiển thị trạng thái bot"""
+    html_content = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Telegram Bot - Email 10 Phút</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0;
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                border-radius: 20px;
+                padding: 40px;
+                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                max-width: 800px;
+                width: 100%;
+                text-align: center;
+            }
+            h1 {
+                color: #333;
+                margin-bottom: 10px;
+                font-size: 2.5em;
+            }
+            .status {
+                background: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 50px;
+                display: inline-block;
+                margin: 20px 0;
+                font-weight: bold;
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            .bot-info {
+                background: #f5f5f5;
+                border-radius: 10px;
+                padding: 20px;
+                margin: 20px 0;
+                text-align: left;
+            }
+            .feature-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin: 30px 0;
+            }
+            .feature {
+                background: linear-gradient(45deg, #f3f4f6, #e5e7eb);
+                padding: 20px;
+                border-radius: 10px;
+                text-align: left;
+            }
+            .telegram-link {
+                display: inline-block;
+                background: #0088cc;
+                color: white;
+                padding: 15px 30px;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 1.2em;
+                margin-top: 20px;
+                transition: transform 0.3s;
+            }
+            .telegram-link:hover {
+                transform: translateY(-5px);
+                background: #006699;
+            }
+            .instruction {
+                background: #fff3cd;
+                border-left: 4px solid #ffc107;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 5px;
+                text-align: left;
+            }
+            .footer {
+                margin-top: 30px;
+                color: #666;
+                font-size: 0.9em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🤖 Telegram Bot</h1>
+            <h2>Email 10 Phút</h2>
+            
+            <div class="status">🟢 Bot đang hoạt động</div>
+            
+            <div class="bot-info">
+                <h3>📋 Thông tin Bot</h3>
+                <p><strong>Tên:</strong> Email 10 Phút Bot</p>
+                <p><strong>Token:</strong> {{BOT_TOKEN}}</p>
+                <p><strong>Triển khai:</strong> Render.com</p>
+                <p><strong>Thời gian chạy:</strong> 24/7</p>
+            </div>
+            
+            <div class="instruction">
+                <h4>📝 Hướng dẫn sử dụng:</h4>
+                <p>1. Mở Telegram và tìm bot: <strong>@Email10PhutBot</strong></p>
+                <p>2. Gửi lệnh <code>/start</code> để bắt đầu</p>
+                <p>3. Sử dụng các nút chức năng để tạo email và kiểm tra hộp thư</p>
+            </div>
+            
+            <div class="feature-list">
+                <div class="feature">
+                    <h4>📧 Tạo Email</h4>
+                    <p>Tạo email 10 phút tự động với nhiều domain</p>
+                </div>
+                <div class="feature">
+                    <h4>📬 Kiểm Tra Inbox</h4>
+                    <p>Xem email và trích xuất mã số tự động</p>
+                </div>
+                <div class="feature">
+                    <h4>🔢 Trích Xuất Số</h4>
+                    <p>Tự động tìm và trích xuất số từ tin nhắn</p>
+                </div>
+            </div>
+            
+            <a href="https://t.me/Email10PhutBot" class="telegram-link" target="_blank">
+                🚀 Bắt đầu với Bot trên Telegram
+            </a>
+            
+            <div class="footer">
+                <p>Bot được triển khai trên Render.com | Luôn hoạt động 24/7</p>
+                <p>© 2024 Email 10 Phút Bot</p>
+            </div>
+        </div>
+        
+        <script>
+            // Cập nhật thời gian hoạt động
+            function updateUptime() {
+                const startTime = Date.now();
+                setInterval(() => {
+                    const uptime = Date.now() - startTime;
+                    const hours = Math.floor(uptime / (1000 * 60 * 60));
+                    const minutes = Math.floor((uptime % (1000 * 60 * 60)) / (1000 * 60));
+                    document.getElementById('uptime').textContent = 
+                        `${hours} giờ ${minutes} phút`;
+                }, 60000);
+            }
+            
+            document.addEventListener('DOMContentLoaded', updateUptime);
+        </script>
+    </body>
+    </html>
+    """
+    
+    # Ẩn phần token
+    masked_token = f"{BOT_TOKEN[:10]}...{BOT_TOKEN[-4:]}" if len(BOT_TOKEN) > 14 else "***"
+    
+    return render_template_string(html_content.replace("{{BOT_TOKEN}}", masked_token))
+
+@app.route('/health')
+def health_check():
+    """Endpoint kiểm tra sức khỏe cho Render"""
+    return {"status": "healthy", "service": "telegram-bot", "bot": "Email10Phut"}
+
+def start_app():
+    """Khởi động web server và bot"""
+    # Chạy bot Telegram trong thread riêng
+    bot_thread = threading.Thread(target=run_bot, daemon=True)
+    bot_thread.start()
+    
+    # Chạy web server
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
+
+if __name__ == '__main__':
+    start_app()
