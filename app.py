@@ -378,3 +378,20 @@ def main():
 
 if __name__ == "__main__":
     main()
+    # ===== Render keep-alive (open PORT) =====
+import os
+from threading import Thread
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+class RenderHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+def run_render_server():
+    port = int(os.environ.get("PORT", 10000))
+    HTTPServer(("0.0.0.0", port), RenderHandler).serve_forever()
+
+Thread(target=run_render_server, daemon=True).start()
+# ========================================
