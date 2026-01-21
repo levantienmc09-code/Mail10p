@@ -1,7 +1,9 @@
 services:
-  - type: worker
+  - type: web
     name: telegram-email-bot
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: python Email10P.py
-    autoDeploy: true
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
