@@ -7,7 +7,7 @@ import re
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 # Token bot của bạn (đã được cung cấp)
-BOT_TOKEN = '8239205483:AAEbEPcbWGYP7zQHPSoAaWD0lObUEfyVL9w'
+BOT_TOKEN = '8239205483:AAHwe2J1Ah7C_rkNbANM_icUUYQh8IAAuXM'
 bot = telebot.TeleBot(BOT_TOKEN)
 
 # Lưu trữ session ID của user
