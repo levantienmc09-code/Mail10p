@@ -489,7 +489,7 @@ def home():
             
             <div class="bot-info">
                 <h3>📋 Thông tin Bot</h3>
-                <p><strong>Tên:</strong> Email 10 Phút Bot</p>
+                <p><strong>Tên:</strong> 𝗕𝗢𝗧 𝟭𝟬𝗣 </p>
                 <p><strong>Token:</strong> {{BOT_TOKEN}}</p>
                 <p><strong>Triển khai:</strong> Render.com</p>
                 <p><strong>Thời gian chạy:</strong> 24/7</p>
@@ -497,7 +497,7 @@ def home():
             
             <div class="instruction">
                 <h4>📝 Hướng dẫn sử dụng:</h4>
-                <p>1. Mở Telegram và tìm bot: <strong>@Email10PhutBot</strong></p>
+                <p>1. Mở Telegram và tìm bot: <strong>@Email10PBot</strong></p>
                 <p>2. Gửi lệnh <code>/start</code> để bắt đầu</p>
                 <p>3. Sử dụng các nút chức năng để tạo email và kiểm tra hộp thư</p>
             </div>
@@ -517,7 +517,7 @@ def home():
                 </div>
             </div>
             
-            <a href="https://t.me/Email10PhutBot" class="telegram-link" target="_blank">
+            <a href="https://t.me/Email10PBot" class="telegram-link" target="_blank">
                 🚀 Bắt đầu với Bot trên Telegram
             </a>
             
